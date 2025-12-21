@@ -56,8 +56,7 @@ const Login = () => {
     initialValues: { name: '', email: '', password: '' },
     validationSchema: SignupSchema,
     onSubmit: async (values, action) => {
-      if (!avatarPath) delete values.avatar;
-      else values.avatar = avatarPath;
+      // Removed avatar logic
 
       const res = await fetch(`${process.env.REACT_APP_API_URL}/user/add`, {
         method: 'POST',
@@ -77,21 +76,7 @@ const Login = () => {
     }
   });
 
-  const uploadFile = async (e) => {
-    const file = e.target.files[0];
-    const fd = new FormData();
-    fd.append('myfile', file);
-
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/util/uploadfile`, {
-      method: 'POST',
-      body: fd
-    });
-
-    if (res.status === 200) {
-      const data = await res.json();
-      setAvatarPath(data.fileName);
-    }
-  };
+  /* Removed avatar upload logic as per request */
 
   return (
     <div className='loginbg min-vh-100 d-flex justify-content-center align-items-center py-5'>
@@ -190,11 +175,6 @@ const Login = () => {
                       />
                       <label htmlFor="signupPassword">Password</label>
                       <div className="invalid-feedback">{signupForm.errors.password}</div>
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="form-label text-muted small ms-1">Profile Picture (Optional)</label>
-                      <input type="file" className="form-control rounded-3" onChange={uploadFile} />
                     </div>
 
                     <button type="submit" className="btn btn-dark w-100 py-3 rounded-pill fw-bold shadow-sm mb-4">
