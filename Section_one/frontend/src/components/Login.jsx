@@ -56,7 +56,9 @@ const Login = () => {
     initialValues: { name: '', email: '', password: '' },
     validationSchema: SignupSchema,
     onSubmit: async (values, action) => {
-      values.avatar = avatarPath;
+      if (!avatarPath) delete values.avatar;
+      else values.avatar = avatarPath;
+
       const res = await fetch(`${process.env.REACT_APP_API_URL}/user/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,9 +68,11 @@ const Login = () => {
       if (res.status === 200) {
         Swal.fire({ icon: 'success', title: 'Signup Success', text: 'Please Login to continue' });
         action.resetForm();
-        setIsSignup(false); // Switch to login view
+        setAvatarPath('');
+        setIsSignup(false);
       } else {
-        Swal.fire({ icon: 'error', title: 'Signup Failed', text: 'Could not create account' });
+        const data = await res.json(); // Parse error response
+        Swal.fire({ icon: 'error', title: 'Signup Failed', text: data.message || 'Could not create account' });
       }
     }
   });
