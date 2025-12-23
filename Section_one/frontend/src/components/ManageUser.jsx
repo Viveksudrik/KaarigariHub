@@ -14,7 +14,7 @@ const ManageUser = () => {
         const currentUser = JSON.parse(sessionStorage.getItem('user'));
 
         if (currentUser) {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/user/getbyid/` + currentUser.id);
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/user/getid/` + currentUser.id); // Changed to match data structure and API endpoint
             if (res.status === 200) {
                 const data = await res.json();
                 setuserList([data]); // Wrap in array to keep table structure
@@ -58,7 +58,7 @@ const ManageUser = () => {
                         <tr className='p-0' key={user._id}>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
-                            <td className='text-center'> <img width={50} className="img-fluid  rounded-5" src={`${process.env.REACT_APP_API_URL}/` + user.avatar} alt="" /></td>
+                            <td className='text-center'> <img width={50} className="img-fluid  rounded-5" src={user.avatar ? `${process.env.REACT_APP_API_URL}/` + user.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" /></td>
                             <td className='text-center'><button className='btn btn-danger' onClick={() => { deleteUser(user._id) }} >Delete Account</button> </td>
                             <td className='text-center'><button className='btn btn-primary' onClick={() => { navigate('/updateuser/' + user._id) }} >Update Profile</button> </td>
                         </tr>

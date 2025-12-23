@@ -17,7 +17,8 @@ const SignupSchema = Yup.object().shape({
     .matches(
       "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$",
       "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
-    )
+    ),
+  role: Yup.string().required('Required')
 });
 
 const Login = () => {
@@ -53,7 +54,7 @@ const Login = () => {
   });
 
   const signupForm = useFormik({
-    initialValues: { name: '', email: '', password: '' },
+    initialValues: { name: '', email: '', password: '', role: 'user' },
     validationSchema: SignupSchema,
     onSubmit: async (values, action) => {
       // Removed avatar logic
@@ -175,6 +176,19 @@ const Login = () => {
                       />
                       <label htmlFor="signupPassword">Password</label>
                       <div className="invalid-feedback">{signupForm.errors.password}</div>
+                    </div>
+
+                    <div className="form-floating mb-3">
+                      <select
+                        className={`form-select rounded-3 ${signupForm.touched.role && signupForm.errors.role ? 'is-invalid' : ''}`}
+                        id="signupRole"
+                        {...signupForm.getFieldProps('role')}
+                      >
+                        <option value="user">Customer</option>
+                        <option value="seller">Seller</option>
+                      </select>
+                      <label htmlFor="signupRole">I want to be a</label>
+                      <div className="invalid-feedback">{signupForm.errors.role}</div>
                     </div>
 
                     <button type="submit" className="btn btn-dark w-100 py-3 rounded-pill fw-bold shadow-sm mb-4">

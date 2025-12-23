@@ -154,7 +154,7 @@ const Navbar = () => {
               width={60}
               height={50}
               className="ms-2 rounded-circle"
-              src={`${process.env.REACT_APP_API_URL}/` + currentUser.avatar}
+              src={currentUser.avatar ? `${process.env.REACT_APP_API_URL}/` + currentUser.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
               alt=""
             />
           </li>

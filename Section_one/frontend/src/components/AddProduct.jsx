@@ -18,7 +18,7 @@ const AddProduct = () => {
             name: "",
             category: "decor-item",
             price: "",
-            discription: "",
+            description: "",
             material: "",
             image: "",
         },
@@ -26,24 +26,41 @@ const AddProduct = () => {
         onSubmit: async (values, action) => {
             values.image = selFile;
             console.log(values);
+
+            const token = sessionStorage.getItem('token'); // Get token from storage
+
+            if (!token) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "You must be logged in to add a product",
+                });
+                return;
+            }
+
             const res = await fetch(`${process.env.REACT_APP_API_URL}/product/add`, {
                 method: "POST",
                 body: JSON.stringify(values),
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-auth-token": token // Add auth token header
+                },
             });
             console.log(res.status);
-            action.resetForm();
+
             if (res.status === 200) {
+                action.resetForm();
                 Swal.fire({
                     icon: "success",
                     title: "Item Uploaded Successfully",
                 });
                 navigate('/productlist');
             } else {
+                const data = await res.json();
                 Swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Something went wrong",
+                    text: data.message || "Something went wrong",
                 });
             }
         },
@@ -82,25 +99,25 @@ const AddProduct = () => {
                                 </div>
                                 <div>
                                     <label className='m-0' htmlFor="">Price</label>
-                                    <p className='error-label'>{addProductForm.touched.name && addProductForm.errors.name}</p>
+                                    <p className='error-label'>{addProductForm.touched.price && addProductForm.errors.price}</p>
                                     <input className="form-control mb-2 rounded-3" type="number" name="price" onChange={addProductForm.handleChange} value={addProductForm.values.price} />
                                 </div>
                                 <div>
-                                    <label htmlFor="">Discription</label>
-                                    <p className='error-label'> {addProductForm.touched.name && addProductForm.errors.name}</p>
-                                    <textarea className="form-control mb-2 rounded-3" name="discription" type="discription" onChange={addProductForm.handleChange} value={addProductForm.values.discription}></textarea>
+                                    <label htmlFor="">Description</label>
+                                    <p className='error-label'> {addProductForm.touched.description && addProductForm.errors.description}</p>
+                                    <textarea className="form-control mb-2 rounded-3" name="description" type="text" onChange={addProductForm.handleChange} value={addProductForm.values.description}></textarea>
                                 </div>
                                 <div>
                                     <label className='m-0' htmlFor="">Material</label>
-                                    <p className='error-label'>{addProductForm.touched.name && addProductForm.errors.name}</p>
-                                    <input className="form-control mb-2 rounded-3" type="material" name="material" onChange={addProductForm.handleChange} value={addProductForm.values.material} />
+                                    <p className='error-label'>{addProductForm.touched.material && addProductForm.errors.material}</p>
+                                    <input className="form-control mb-2 rounded-3" type="text" name="material" onChange={addProductForm.handleChange} value={addProductForm.values.material} />
                                 </div>
                                 <div>
-                                    <label htmlFor="file">Upload Image</label>
-                                    <input type="file" name="" onChange={uploadFile} />
+                                    <label htmlFor="file" className="form-label mb-1">Upload Image</label>
+                                    <input type="file" className="form-control rounded-3" name="" onChange={uploadFile} />
                                 </div>
                                 <div>
-                                    <button type='submit' onChange={addProductForm.handleChange} className="btn btn-danger w-100 mt-3 rounded-3 mb-5 ">Add Items</button>
+                                    <button type='submit' className="btn btn-danger w-100 mt-3 rounded-3 mb-5 ">Add Items</button>
                                 </div>
 
                             </form>
